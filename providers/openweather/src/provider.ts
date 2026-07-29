@@ -2,6 +2,7 @@ import { WeatherProvider, WeatherRequest, WeatherResponse } from '@repo/core';
 import { OpenWeatherMapper } from './mapper';
 import { getBaseUrl } from './config';
 import { OpenWeatherCurrentResponse } from './apiTypes';
+import { HttpTransport } from '../../../transports/http';
 export interface OpenWeatherProviderConfig {
     apiKey: string;
 }
@@ -18,11 +19,15 @@ export class OpenWeatherProvider implements WeatherProvider {
     }
     async current(request: WeatherRequest): Promise<WeatherResponse> {
 
-        const response = await this.transport.request(
-            method: 'GET',
-            url: getBaseUrl(request.location.lat, request.location.lon, this.#apiKey)
+        const { lat, lon } = this.mapper.fromWeatherRequest(request);
+
+        const response = await this.transport.request<OpenWeatherCurrentResponse>(
+            {
+                method: 'GET',
+                url: getBaseUrl(lat, lon, this.#apiKey)
+            }
         );
 
-        return this.mapper.toWeatherResponse(response.body);
+        return this.mapper.toWeatherResponse(response.data);
     }
 }

@@ -1,6 +1,6 @@
 import type { Transport, HTTPRequest, HTTPResponse } from '@repo/core';
 export class HttpTransport implements Transport {
-    async request(request: HTTPRequest): Promise<HTTPResponse> {
+    async request<T = unknown>(request: HTTPRequest): Promise<HTTPResponse<T>> {
         const response = await fetch(request.url, {
             method: request.method,
             body: request.body,
@@ -15,7 +15,7 @@ export class HttpTransport implements Transport {
         }
         return {
             status: 'success',
-            data: body,
+            data: body as T,
         };
     }
 }
