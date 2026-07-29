@@ -1,11 +1,11 @@
 import { WeatherProvider, WeatherRequest, WeatherResponse } from '@repo/core';
-import { OpenWeatherCurrentResponse, OpenWeatherMapper } from './mapper';
+import { OpenWeatherMapper } from './mapper';
 export class OpenWeatherProvider implements WeatherProvider {
     readonly name = 'OpenWeather';
-    private readonly mapper = new OpenWeatherMapper();
 
+    constructor(private mapper: OpenWeatherMapper) { }
     async current(request: WeatherRequest): Promise<WeatherResponse> {
-        const weatherData: OpenWeatherCurrentResponse = {
+        const weatherData = {
             "lat": 51.5,
             "lon": -0.1,
             "timezone": "Europe/London",
