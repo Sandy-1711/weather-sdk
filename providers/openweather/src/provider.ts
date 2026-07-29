@@ -9,15 +9,20 @@ export interface OpenWeatherProviderConfig {
 export class OpenWeatherProvider implements WeatherProvider {
     readonly name = 'OpenWeather';
     #apiKey: string;
-    constructor(private mapper: OpenWeatherMapper, config: OpenWeatherProviderConfig) {
+    constructor(
+        private transport: HttpTransport,
+        private mapper: OpenWeatherMapper,
+        config: OpenWeatherProviderConfig
+    ) {
         this.#apiKey = config.apiKey;
     }
     async current(request: WeatherRequest): Promise<WeatherResponse> {
 
-        const response = await fetch(getBaseUrl(51.5, -0.1, this.#apiKey));
+        const response = await this.transport.request(
+            method: 'GET',
+            url: getBaseUrl(request.location.lat, request.location.lon, this.#apiKey)
+        );
 
-        const weatherData: OpenWeatherCurrentResponse = await response.json();
-
-        return this.mapper.toWeatherResponse(weatherData);
+        return this.mapper.toWeatherResponse(response.body);
     }
 }

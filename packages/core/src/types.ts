@@ -1,5 +1,8 @@
 export interface WeatherRequest {
-    location: string;
+    location: {
+        lat: number;
+        lon: number;
+    } | string;
 }
 export interface WeatherResponse {
     temperature: number;

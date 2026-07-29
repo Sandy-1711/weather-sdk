@@ -192,6 +192,12 @@ importers:
         specifier: ^4.0.0
         version: 4.9.5
 
+  transports/http:
+    dependencies:
+      '@repo/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+
 packages:
 
   '@babel/code-frame@7.29.7':
