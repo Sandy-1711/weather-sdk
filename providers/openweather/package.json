@@ -5,14 +5,17 @@
     "types": "dist/index.d.ts",
     "scripts": {
         "build": "tsc",
+        "check-types": "tsc --noEmit",
         "test": "jest"
     },
     "dependencies": {
         "@repo/core": "workspace:*",
+        "@repo/transports/http": "workspace:*",
         "axios": "^0.21.1"
     },
     "devDependencies": {
-        "typescript": "^4.0.0",
+        "@repo/typescript-config": "workspace:*",
+        "typescript": "5.9.2",
         "jest": "^26.0.0",
         "@types/jest": "^26.0.0"
     }

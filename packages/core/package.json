@@ -5,6 +5,7 @@
     "types": "src/index.ts",
     "scripts": {
         "build": "tsc",
+        "check-types": "tsc --noEmit",
         "test": "jest"
     },
     "exports": {
@@ -15,7 +16,8 @@
     },
     "dependencies": {},
     "devDependencies": {
-        "typescript": "^4.0.0",
+        "@repo/typescript-config": "workspace:*",
+        "typescript": "5.9.2",
         "jest": "^26.0.0",
         "@types/jest": "^26.0.0"
     }
