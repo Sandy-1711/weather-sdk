@@ -2,7 +2,7 @@ import { WeatherProvider, WeatherRequest, WeatherResponse } from '@repo/core';
 import { OpenWeatherMapper } from './mapper';
 import { getBaseUrl } from './config';
 import { OpenWeatherCurrentResponse } from './apiTypes';
-import { HttpTransport } from '../../../transports/http';
+import { HttpTransport } from '@repo/transports/http';
 export interface OpenWeatherProviderConfig {
     apiKey: string;
 }
@@ -27,6 +27,10 @@ export class OpenWeatherProvider implements WeatherProvider {
                 url: getBaseUrl(lat, lon, this.#apiKey)
             }
         );
+
+        if (response.status === 'error') {
+            throw new Error(`OpenWeatherProvider: ${response.error}`);
+        }
 
         return this.mapper.toWeatherResponse(response.data);
     }
