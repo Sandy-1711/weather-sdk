@@ -8,14 +8,8 @@ export class HttpTransport implements Transport {
         });
         const body = await response.json();
         if (!response.ok) {
-            return {
-                status: 'error',
-                error: body.message || 'Unknown error',
-            }
+            throw new Error(`HTTP request failed with status ${response.status}: ${body}`);
         }
-        return {
-            status: 'success',
-            data: body as T,
-        };
+        return { status: 'success', data: body as T };
     }
 }

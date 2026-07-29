@@ -28,10 +28,6 @@ export class OpenWeatherProvider implements WeatherProvider {
             }
         );
 
-        if (response.status === 'error') {
-            throw new Error(`OpenWeatherProvider: ${response.error}`);
-        }
-
         return this.mapper.toWeatherResponse(response.data);
     }
 }

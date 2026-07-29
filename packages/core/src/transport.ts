@@ -6,7 +6,6 @@ export interface HTTPRequest {
 }
 
 export type HTTPResponse<T = unknown> =
-    | { status: 'error'; error: string }
     | { status: 'success'; data: T };
 
 export interface Transport {
