@@ -5,8 +5,11 @@ export interface HTTPRequest {
     body?: any;
 }
 
-export type HTTPResponse<T = unknown> =
-    | { status: 'success'; data: T };
+export interface HTTPResponse<T> {
+    status: number;
+    headers: Record<string, string>;
+    body: T;
+}
 
 export interface Transport {
     request<T = unknown>(request: HTTPRequest): Promise<HTTPResponse<T>>;

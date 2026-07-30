@@ -3,6 +3,7 @@ import {
     DEFAULT_UNITS,
     kphToMs,
     Units,
+    ValidationError,
     WeatherRequest,
     WeatherResponse,
 } from '@repo/core';
@@ -16,7 +17,9 @@ export class WeatherAPIMapper {
 
         //TODO: Implement lat long to city name conversion using a geocoding API if needed
         if (request.location.type !== 'city') {
-            throw new Error('WeatherAPIMapper: Only city location type is supported');
+            throw new ValidationError(
+                `WeatherAPI requires a 'city' location, received '${request.location.type}'`
+            );
         }
 
         return {

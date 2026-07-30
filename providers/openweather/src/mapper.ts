@@ -5,6 +5,7 @@ import {
     speedFromKph,
     temperatureFromCelcius,
     Units,
+    ValidationError,
     WeatherRequest,
     WeatherResponse,
 } from '@repo/core';
@@ -21,7 +22,9 @@ export class OpenWeatherMapper {
 
     fromWeatherRequest(request: WeatherRequest): OpenWeatherRequest {
         if (request.location.type !== 'coordinates') {
-            throw new Error('OpenWeatherMapper: Only coordinates location type is supported');
+            throw new ValidationError(
+                `OpenWeather requires a 'coordinates' location, received '${request.location.type}'`
+            );
             // TODO: Implement city name to coordinates conversion using OpenWeather API
         }
         return {

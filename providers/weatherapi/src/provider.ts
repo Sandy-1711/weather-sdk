@@ -18,8 +18,7 @@ export class WeatherAPIProvider implements WeatherProvider {
     ) {
         if (!config.apiKey && !process.env.WEATHER_API_KEY) {
             throw new ConfigurationError(
-                "API key is required",
-                new Error("No API key provided")
+                "WeatherAPI API key is required: pass config.apiKey or set WEATHER_API_KEY"
             );
         }
         this.apiKey = config.apiKey || process.env.WEATHER_API_KEY!;
