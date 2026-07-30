@@ -11,5 +11,10 @@ export interface WeatherRequest {
     location: Location;
 }
 export interface WeatherResponse {
-    temperature: number;
+    temperature_celcius: number;
+    temperature_farenheit: number;
+    wind_speed_kph: number;
+    wind_speed_mph: number;
+    wind_direction: string;
+    humidity: number;
 }
