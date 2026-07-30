@@ -201,6 +201,31 @@ importers:
         specifier: 5.9.2
         version: 5.9.2
 
+  providers/weatherapi:
+    dependencies:
+      '@repo/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@repo/transports/http':
+        specifier: workspace:*
+        version: link:../../transports/http
+      axios:
+        specifier: ^0.21.1
+        version: 0.21.4
+    devDependencies:
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
+      '@types/jest':
+        specifier: ^26.0.0
+        version: 26.0.24
+      jest:
+        specifier: ^26.0.0
+        version: 26.6.3
+      typescript:
+        specifier: 5.9.2
+        version: 5.9.2
+
   transports/http:
     dependencies:
       '@repo/core':
