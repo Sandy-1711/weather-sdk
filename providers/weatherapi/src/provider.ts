@@ -30,6 +30,6 @@ export class WeatherAPIProvider implements WeatherProvider {
             method: "GET",
             url: buildUrl(this.apiKey, q)
         })
-        return this.mapper.fromWeatherAPIResponse(response.data);
+        return this.mapper.fromWeatherAPIResponse(response.data, request.units);
     }
 }

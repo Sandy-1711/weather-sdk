@@ -1,11 +1,25 @@
-import { WeatherRequest, WeatherResponse } from '@repo/core';
+import {
+    DEFAULT_UNITS,
+    degreesToCardinal,
+    msToKph,
+    speedFromKph,
+    temperatureFromCelcius,
+    Units,
+    WeatherRequest,
+    WeatherResponse,
+} from '@repo/core';
 import { OpenWeatherCurrentResponse } from './apiTypes';
 
+export type OpenWeatherRequest = {
+    lat: number;
+    lon: number;
+    units: 'metric';
+    lang?: string;
+};
 
 export class OpenWeatherMapper {
 
-
-    fromWeatherRequest(request: WeatherRequest) {
+    fromWeatherRequest(request: WeatherRequest): OpenWeatherRequest {
         if (request.location.type !== 'coordinates') {
             throw new Error('OpenWeatherMapper: Only coordinates location type is supported');
             // TODO: Implement city name to coordinates conversion using OpenWeather API
@@ -13,13 +27,18 @@ export class OpenWeatherMapper {
         return {
             lat: request.location.lat,
             lon: request.location.lon,
+            units: 'metric',
+            lang: request.language,
         };
     }
 
 
-    toWeatherResponse(response: OpenWeatherCurrentResponse): WeatherResponse {
+    toWeatherResponse(response: OpenWeatherCurrentResponse, units: Units = DEFAULT_UNITS): WeatherResponse {
         return {
-            temperature: response.data.temp,
+            temperature: temperatureFromCelcius(response.data.temp, units),
+            wind_speed: speedFromKph(msToKph(response.data.wind_speed), units),
+            wind_direction: degreesToCardinal(response.data.wind_deg),
+            humidity: response.data.humidity,
         };
     }
 }

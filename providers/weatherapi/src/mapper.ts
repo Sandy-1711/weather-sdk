@@ -1,8 +1,15 @@
-import { WeatherRequest, WeatherResponse } from '@repo/core';
+import {
+    celciusToKelvin,
+    DEFAULT_UNITS,
+    kphToMs,
+    Units,
+    WeatherRequest,
+    WeatherResponse,
+} from '@repo/core';
 import { WeatherAPIResponse } from './apiTypes';
 type WeatherAPIRequest = {
     q: string;
-    lang?: string; //# Language not supported at the moment
+    lang?: string;
 };
 export class WeatherAPIMapper {
     toWeatherApiRequest(request: WeatherRequest): WeatherAPIRequest {
@@ -14,13 +21,39 @@ export class WeatherAPIMapper {
 
         return {
             q: request.location.name,
+            lang: request.language,
         };
     }
 
-    fromWeatherAPIResponse(response: WeatherAPIResponse): WeatherResponse {
+    fromWeatherAPIResponse(response: WeatherAPIResponse, units: Units = DEFAULT_UNITS): WeatherResponse {
+        const { current } = response;
         return {
-            temperature: response.current.temp_c,
+            temperature: this.#temperature(current, units),
+            wind_speed: this.#windSpeed(current, units),
+            wind_direction: current.wind_dir,
+            humidity: current.humidity,
         };
     }
 
+    #temperature(current: WeatherAPIResponse['current'], units: Units): number {
+        switch (units) {
+            case 'metric':
+                return current.temp_c;
+            case 'imperial':
+                return current.temp_f;
+            case 'standard':
+                return celciusToKelvin(current.temp_c);
+        }
+    }
+
+    #windSpeed(current: WeatherAPIResponse['current'], units: Units): number {
+        switch (units) {
+            case 'metric':
+                return current.wind_kph;
+            case 'imperial':
+                return current.wind_mph;
+            case 'standard':
+                return kphToMs(current.wind_kph);
+        }
+    }
 }

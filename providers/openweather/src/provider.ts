@@ -22,15 +22,15 @@ export class OpenWeatherProvider implements WeatherProvider {
     }
     async current(request: WeatherRequest): Promise<WeatherResponse> {
 
-        const { lat, lon } = this.mapper.fromWeatherRequest(request);
+        const providerRequest = this.mapper.fromWeatherRequest(request);
 
         const response = await this.transport.request<OpenWeatherCurrentResponse>(
             {
                 method: 'GET',
-                url: getBaseUrl(lat, lon, this.#apiKey)
+                url: getBaseUrl(providerRequest, this.#apiKey)
             }
         );
 
-        return this.mapper.toWeatherResponse(response.data);
+        return this.mapper.toWeatherResponse(response.data, request.units);
     }
 }
