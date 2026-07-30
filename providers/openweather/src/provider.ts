@@ -1,4 +1,4 @@
-import { WeatherProvider, WeatherRequest, WeatherResponse } from '@repo/core';
+import { ConfigurationError, WeatherProvider, WeatherRequest, WeatherResponse } from '@repo/core';
 import { OpenWeatherMapper } from './mapper';
 import { getBaseUrl } from './config';
 import { OpenWeatherCurrentResponse } from './apiTypes';
@@ -15,7 +15,10 @@ export class OpenWeatherProvider implements WeatherProvider {
         private mapper: OpenWeatherMapper,
         config: OpenWeatherProviderConfig
     ) {
-        this.#apiKey = config.apiKey;
+        if (!config.apiKey && !process.env.OPENWEATHER_API_KEY) {
+            throw new ConfigurationError('API key is required', new Error('No API key provided'));
+        }
+        this.#apiKey = config.apiKey || process.env.OPENWEATHER_API_KEY!;
     }
     async current(request: WeatherRequest): Promise<WeatherResponse> {
 
