@@ -191,15 +191,9 @@ importers:
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
-      '@types/jest':
-        specifier: ^26.0.0
-        version: 26.0.24
       '@types/node':
         specifier: ^22.15.3
         version: 22.15.3
-      jest:
-        specifier: ^26.0.0
-        version: 26.6.3
       typescript:
         specifier: 5.9.2
         version: 5.9.2
@@ -219,15 +213,9 @@ importers:
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
-      '@types/jest':
-        specifier: ^26.0.0
-        version: 26.0.24
       '@types/node':
         specifier: ^22.15.3
         version: 22.15.3
-      jest:
-        specifier: ^26.0.0
-        version: 26.6.3
       typescript:
         specifier: 5.9.2
         version: 5.9.2
