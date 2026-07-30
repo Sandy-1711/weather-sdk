@@ -9,12 +9,12 @@ type Location = {
 
 export interface WeatherRequest {
     location: Location;
+    units: 'metric' | 'imperial' | 'standard';
+    language?: string; 
 }
 export interface WeatherResponse {
-    temperature_celcius: number;
-    temperature_farenheit: number;
-    wind_speed_kph: number;
-    wind_speed_mph: number;
+    temperature: number;
+    wind_speed: number;
     wind_direction: string;
     humidity: number;
 }
