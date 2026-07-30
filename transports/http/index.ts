@@ -1,4 +1,4 @@
-import { TransportError } from '@repo/core';
+import { HttpError, NetworkError, ParseError } from '@repo/core';
 import type { Transport, HTTPRequest, HTTPResponse } from '@repo/core';
 
 export class HttpTransport implements Transport {
@@ -12,36 +12,54 @@ export class HttpTransport implements Transport {
                 headers: request.headers,
             });
         } catch (error) {
-            throw new TransportError(
+            throw new NetworkError(
                 `${request.method} ${request.url} failed before a response was received`,
-                'transport_error',
                 error as Error
             );
         }
 
-        let body: unknown;
+        const headers = Object.fromEntries(response.headers.entries());
+
+        let raw: string;
 
         try {
-            body = await response.json();
+            raw = await response.text();
         } catch (error) {
-            throw new TransportError(
-                "Failed to parse response body",
-                "parse_error",
+            throw new NetworkError(
+                `${request.method} ${request.url} failed while reading the response body`,
                 error as Error
             );
         }
 
         if (!response.ok) {
-            throw new TransportError(
-                `HTTP ${response.status}`,
-                "transport_error"
+            // Error bodies are frequently not JSON (proxy HTML, empty 502s), so
+            // the status must survive even when the body cannot be decoded.
+            throw new HttpError(response.status, headers, decode(raw) ?? raw);
+        }
+
+        let body: unknown;
+
+        try {
+            body = JSON.parse(raw);
+        } catch (error) {
+            throw new ParseError(
+                'Failed to parse response body',
+                error as Error
             );
         }
 
         return {
             status: response.status,
-            headers: Object.fromEntries(response.headers.entries()),
+            headers,
             body: body as T,
         };
+    }
+}
+
+function decode(raw: string): unknown {
+    try {
+        return JSON.parse(raw);
+    } catch {
+        return undefined;
     }
 }

@@ -5,6 +5,8 @@ export type SDKErrorCode =
     | "rate_limit"
     | "provider_error"
     | "transport_error"
+    | "network_error"
+    | "http_error"
     | "parse_error"
     | "unknown";
 

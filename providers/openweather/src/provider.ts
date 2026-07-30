@@ -6,7 +6,7 @@ import { HttpTransport } from '@repo/transports/http';
 export interface OpenWeatherProviderConfig {
     apiKey: string;
 }
-import { APIError, HTTPResponse } from '@repo/core';
+import { APIError, HttpError } from '@repo/core';
 
 export class OpenWeatherProvider implements WeatherProvider {
     readonly name = 'OpenWeather';
@@ -27,38 +27,57 @@ export class OpenWeatherProvider implements WeatherProvider {
 
         const providerRequest = this.mapper.fromWeatherRequest(request);
 
-        const response = await this.transport.request<OpenWeatherCurrentResponse>(
-            {
-                method: 'GET',
-                url: getBaseUrl(providerRequest, this.#apiKey)
+        try {
+            const response = await this.transport.request<OpenWeatherCurrentResponse>(
+                {
+                    method: 'GET',
+                    url: getBaseUrl(providerRequest, this.#apiKey)
+                }
+            );
+
+            return this.mapper.toWeatherResponse(response.body, request.units);
+        } catch (error) {
+            if (error instanceof HttpError) {
+                throw this.#translateHttpError(error);
             }
-        );
-
-        this.#handleApiError(response);
-
-        return this.mapper.toWeatherResponse(response.body, request.units);
-    }
-    #handleApiError(response: HTTPResponse<OpenWeatherCurrentResponse>) {
-        if (response.status === 401) {
-            let errorMessage = 'Unauthorized: Invalid or missing API key';
-            throw new APIError(
-                this.name,
-                errorMessage,
-                'provider_error',
-                response.status,
-                new Error(`OpenWeather API returned status ${response.status}: ${errorMessage}`)
-            );
+            throw error;
         }
-        else if (response.status === 429) {
-            let errorMessage = 'Too Many Requests: Rate limit exceeded';
-            throw new APIError(
-                this.name,
-                errorMessage,
-                'provider_error',
-                response.status,
-                new Error(`OpenWeather API returned status ${response.status}: ${errorMessage}`)
-            );
+    }
+
+    #translateHttpError(error: HttpError): APIError {
+        switch (error.status) {
+            case 401:
+                return new APIError(
+                    this.name,
+                    'Unauthorized: invalid or missing API key',
+                    'authentication',
+                    error.status,
+                    error
+                );
+            case 429:
+                return new APIError(
+                    this.name,
+                    'Too Many Requests: rate limit exceeded',
+                    'rate_limit',
+                    error.status,
+                    error
+                );
+            case 404:
+                return new APIError(
+                    this.name,
+                    'Not Found: no data for the requested coordinates',
+                    'provider_error',
+                    error.status,
+                    error
+                );
+            default:
+                return new APIError(
+                    this.name,
+                    `OpenWeather request failed with status ${error.status}`,
+                    'provider_error',
+                    error.status,
+                    error
+                );
         }
     }
 }
-
