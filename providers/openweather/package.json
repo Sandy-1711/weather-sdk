@@ -15,8 +15,9 @@
     },
     "devDependencies": {
         "@repo/typescript-config": "workspace:*",
-        "typescript": "5.9.2",
+        "@types/jest": "^26.0.0",
+        "@types/node": "^22.15.3",
         "jest": "^26.0.0",
-        "@types/jest": "^26.0.0"
+        "typescript": "5.9.2"
     }
 }
