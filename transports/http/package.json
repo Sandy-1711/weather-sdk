@@ -6,8 +6,7 @@
     "types": "dist/index.d.ts",
     "scripts": {
         "build": "tsc -p tsconfig.json",
-        "check-types": "tsc --noEmit",
-        "test": "jest"
+        "check-types": "tsc --noEmit"
     },
     "dependencies": {
         "@repo/core": "workspace:*"
